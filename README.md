@@ -10,21 +10,49 @@
 ## Project Overview
 
 This project demonstrates the analysis of real phishing email samples to identify 
-malicious indicators of compromise (IOCs). Two TryHackMe rooms were completed to 
-gain hands-on experience investigating actual phishing emails used by attackers.
-
-Phishing is one of the most common attack vectors SOC analysts encounter daily. 
-This project covers email header analysis, malicious URL detection, fake login page 
-identification, and malicious attachment investigation.
+malicious indicators of compromise. Two TryHackMe rooms were completed to gain 
+hands-on experience investigating actual phishing emails used by attackers.
 
 ---
 
 ## TryHackMe Rooms Completed
 
-| Room | Description | Status |
-|------|-------------|--------|
-| Phishing Emails 1 | Email structure, headers, delivery protocols | ✅ 100% |
-| Phishing Emails in Action | Real phishing email sample analysis | ✅ 100% |
+| Room | Status |
+|------|--------|
+| Phishing Emails 1 | ✅ 100% |
+| Phishing Emails in Action | ✅ 100% |
+
+---
+
+## Screenshots
+
+### Room 1 – Phishing Emails 1 Completed
+![Room 1](screenshots/6_room1_completed.png)
+*TryHackMe Phishing Emails 1 completed with 100% progress – all 7 tasks finished.*
+
+---
+
+### Room 2 – Phishing Emails in Action Completed
+![Room 2](screenshots/10_room2_completed.png)
+*TryHackMe Phishing Emails in Action completed with 100% progress – all 8 tasks finished.*
+
+---
+
+### Email Header Analysis
+![Email Header](screenshots/2_email_header.png)
+*Real phishing email header showing spoofed sender newsletters@ant.anki-tech.com masquerading as ADI Security Services.*
+
+---
+
+### Phishing Email Body Analysis
+![Email Body](screenshots/3_email_body.png)
+*Email body analysis revealing malicious PDF attachment Payment-updateid.pdf with base64 encoded content.*
+
+---
+
+### Fake Login Page – Credential Harvesting
+![Login Page](screenshots/9_phishing_login_page.png)
+*Fake Microsoft Outlook login page used to steal credentials – shows Invalid Credentials regardless of input.*
 
 ---
 
@@ -36,19 +64,8 @@ identification, and malicious attachment investigation.
 | 2 | Malicious URL | hxxp[://]devret[.]xyz | T1566.002 |
 | 3 | Brand Impersonation | Home Depot, Microsoft, Adobe | T1566 |
 | 4 | Credential Harvesting | Fake Outlook login page | T1056.003 |
-| 5 | Tracking Pixel | Tracking.png embedded in email | T1598 |
+| 5 | Tracking Pixel | Tracking.png embedded | T1598 |
 | 6 | Malicious Attachment | Payment-updateid.pdf | T1566.001 |
-
----
-
-## Skills Demonstrated
-
-- Email header analysis to identify spoofed senders
-- Malicious URL detection and defanging using CyberChef
-- Identifying fake login pages used for credential harvesting
-- Recognizing phishing techniques such as urgency and brand impersonation
-- Mapping phishing indicators to MITRE ATT&CK framework
-- Documenting findings in a professional SOC investigation report
 
 ---
 
@@ -59,30 +76,7 @@ identification, and malicious attachment investigation.
 | TryHackMe | Lab environment with real phishing samples |
 | Mozilla Thunderbird | Email client for analyzing .eml files |
 | CyberChef | URL defanging and base64 decoding |
-| MITRE ATT&CK | Threat framework for mapping attack techniques |
-
----
-
-## Lab Architecture
-```
-Phishing Email Received
-        ↓
-Email Header Analysis → Identify Spoofed Sender
-        ↓
-Email Body Analysis → Find Malicious URLs & Attachments
-        ↓
-URL Defanging → CyberChef
-        ↓
-Domain Investigation → Identify Malicious Domains
-        ↓
-Findings → MITRE ATT&CK Mapping
-```
-
----
-
-## Project Report
-
-Full investigation report with screenshots is available in this repository.
+| MITRE ATT&CK | Threat framework mapping |
 
 ---
 
