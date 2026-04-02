@@ -8,9 +8,29 @@
 
 ## Project Overview
 
-Built a SOC home lab to simulate real-world cyber attacks and detect them using 
-Splunk SIEM. The lab replicates the core workflow of a SOC analyst — monitoring 
-security logs, detecting suspicious activity, and investigating threats.
+As a SOC Analyst, one of the core responsibilities is monitoring security events, 
+detecting suspicious activity, and investigating potential threats using a SIEM platform. 
+This project replicates that real-world workflow by building a fully functional SOC home 
+lab from scratch.
+
+The lab environment simulates a small enterprise network where an attacker machine 
+launches real cyber attacks against a target machine. All generated security events 
+are collected and analyzed using Splunk SIEM — exactly how a SOC analyst would 
+investigate threats in a real company.
+
+---
+
+## SOC Analyst Workflow Demonstrated
+```
+Threat Actor Activity → Windows Security Logs Generated → 
+Splunk SIEM Collects Logs → SOC Analyst Investigates → Threat Detected
+```
+
+This workflow mirrors the daily responsibilities of a Tier 1 SOC Analyst:
+- Monitoring incoming security alerts
+- Searching SIEM for suspicious EventCodes
+- Identifying attack patterns in logs
+- Documenting findings and mapping to threat frameworks
 
 ---
 
@@ -18,10 +38,10 @@ security logs, detecting suspicious activity, and investigating threats.
 
 | Component | System | IP Address | Role |
 |-----------|--------|------------|------|
-| Attacker | Kali Linux 2025.2 | 192.168.52.x | Simulate attacks |
+| Attacker | Kali Linux 2025.2 | 192.168.52.x | Simulate cyber attacks |
 | Target | Windows Server 2022 | 192.168.52.136 | Generate security logs |
-| SIEM | Splunk Enterprise 10.0.1 | 127.0.0.1:8000 | Log monitoring |
-| Virtualization | VMware Workstation Pro 17 | Host Machine | Run VMs |
+| SIEM | Splunk Enterprise 10.0.1 | 127.0.0.1:8000 | Log monitoring & analysis |
+| Virtualization | VMware Workstation Pro 17 | Host Machine | Run virtual machines |
 
 ---
 
@@ -29,49 +49,93 @@ security logs, detecting suspicious activity, and investigating threats.
 
 ### Network Connectivity Test
 ![Ping Test](screenshots/4.%20ping_test.png)
-*Network connectivity verified between Kali Linux and Windows Server 2022 before attack simulation.*
+*Before any attack simulation, network connectivity between the attacker machine 
+(Kali Linux) and target machine (Windows Server 2022) was verified using ping. 
+A SOC analyst always confirms the network environment is working correctly 
+before beginning any investigation or simulation.*
 
 ---
 
 ### Splunk SIEM Dashboard
 ![Splunk Dashboard](screenshots/5.%20splunk_dashboard.png)
-*Splunk configured to collect Windows Security, System, and Application logs for real-time monitoring.*
+*Splunk Enterprise was installed and configured as the SIEM platform to collect 
+Windows Security, System, and Application logs. In a real SOC environment, the 
+SIEM dashboard is the primary tool analysts use to monitor incoming security events, 
+search for suspicious activity, and investigate potential threats in real time.*
 
 ---
 
-### Attack 1 – Network Scan (Nmap)
+### Attack Simulation – Network Scanning (Nmap)
 ![Nmap Attack](screenshots/8.%20attack_nmap_scan.png)
-*Nmap scan from Kali Linux identifying open ports on Windows Server — simulates attacker reconnaissance (MITRE T1046).*
+*A network reconnaissance scan was performed from the Kali Linux attacker machine 
+using Nmap to identify open ports and running services on the Windows Server target. 
+This simulates the initial reconnaissance phase a real threat actor performs before 
+launching a targeted attack. As a SOC analyst, identifying unauthorized network scans 
+in SIEM logs is a key early warning indicator of a potential breach — mapped to 
+MITRE ATT&CK T1046 (Network Service Discovery).*
 
 ---
 
-### Attack 2 – Brute Force Login (Hydra)
+### Attack Simulation – Brute Force Login (Hydra)
 ![Brute Force](screenshots/9.%20attack_brute_force.png)
-*Hydra brute force attack targeting SMB port 445 generating failed login events in Windows Security logs (MITRE T1110).*
+*A brute force credential attack was simulated using Hydra from the Kali Linux 
+machine targeting the SMB service (port 445) on the Windows Server. This attack 
+generates a high volume of failed authentication attempts which appear as 
+EventCode 4625 (Failed Logon) in the Windows Security logs. SOC analysts 
+commonly encounter brute force attacks as one of the most frequent attack 
+types in enterprise environments — mapped to MITRE ATT&CK T1110 (Brute Force).*
 
 ---
 
-### Investigation – Attack Detected in Splunk
+### SOC Investigation – Attack Detected in Splunk
 ![Investigation](screenshots/10.%20investigation_results.png)
-*Splunk query EventCode=4625 returned 15 failed logon events — confirming brute force attack was successfully detected.*
+*After running the brute force attack, Splunk was used to investigate the 
+generated security events. The search query EventCode=4625 returned 15 failed 
+logon events, confirming the attack was successfully detected by the SIEM. 
+This demonstrates the core SOC analyst skill of using SIEM queries to identify 
+and investigate suspicious authentication activity — a task performed daily in 
+real SOC environments.*
 
 ---
 
-## Windows Event IDs Used
+## Attacks Simulated & Detection
 
-| Event ID | Name | Description |
-|----------|------|-------------|
-| 4624 | Successful Logon | Normal login activity |
-| 4625 | Failed Logon | Brute force indicator |
-| 4688 | Process Creation | Suspicious process execution |
-| 4672 | Special Privileges | Privilege escalation indicator |
+| Attack | Tool | Detection Query | MITRE ATT&CK |
+|--------|------|----------------|--------------|
+| Network Scanning | Nmap | index=main EventCode=4625 | T1046 |
+| Brute Force Login | Hydra | index=main EventCode=4625 | T1110 |
+| SMB Service Attack | Hydra | index=main EventCode=4625 | T1021.002 |
 
 ---
 
-## Splunk Queries
-```
+## Windows Event IDs Investigated
+
+As a SOC analyst, understanding Windows Event IDs is essential for 
+investigating security incidents. The following Event IDs were used 
+during this investigation:
+
+| Event ID | Name | SOC Relevance |
+|----------|------|---------------|
+| 4624 | Successful Logon | Baseline normal activity — monitor for unusual logons |
+| 4625 | Failed Logon | Key indicator of brute force attacks |
+| 4688 | Process Creation | Detect suspicious process execution |
+| 4672 | Special Privileges | Indicates potential privilege escalation |
+| 4740 | Account Lockout | Triggered by repeated failed login attempts |
+
+---
+
+## Splunk Queries Used
+```splunk
+# View all security logs
+index=main
+
+# Investigate successful logins
 index=main EventCode=4624
+
+# Detect failed login attempts (Brute Force Indicator)
 index=main EventCode=4625
+
+# Monitor process creation events
 index=main EventCode=4688
 ```
 
@@ -83,10 +147,22 @@ index=main EventCode=4688
 |------|---------|---------|
 | VMware Workstation Pro | 17 | Virtual machine environment |
 | Kali Linux | 2025.2 | Attacker machine |
-| Windows Server 2022 | Build 20348 | Target machine |
-| Splunk Enterprise | 10.0.1 | SIEM platform |
-| Nmap | 7.95 | Network scanning |
-| Hydra | 9.5 | Brute force simulation |
+| Windows Server 2022 | Build 20348 | Target machine – log generation |
+| Splunk Enterprise | 10.0.1 | SIEM – log collection and analysis |
+| Nmap | 7.95 | Network reconnaissance simulation |
+| Hydra | 9.5 | Brute force credential attack simulation |
+
+---
+
+## Key Takeaways
+
+From a SOC analyst perspective this project demonstrates:
+
+- How attackers perform reconnaissance before launching attacks
+- How brute force attacks appear in Windows Security logs
+- How SIEM tools like Splunk are used to detect and investigate threats
+- How to map real-world attacks to the MITRE ATT&CK framework
+- The importance of log monitoring and alert investigation in SOC operations
 
 ---
 
