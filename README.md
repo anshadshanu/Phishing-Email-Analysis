@@ -1,82 +1,92 @@
-# Phishing Email Analysis
-## Identifying Malicious Emails & Indicators of Compromise
+# SOC Home Lab – SIEM Monitoring & Attack Detection
 
-![TryHackMe](https://img.shields.io/badge/Platform-TryHackMe-red)
+![VMware](https://img.shields.io/badge/Platform-VMware-blue)
+![Splunk](https://img.shields.io/badge/SIEM-Splunk-orange)
 ![Status](https://img.shields.io/badge/Status-Completed-green)
-![Difficulty](https://img.shields.io/badge/Difficulty-Easy-brightgreen)
 
 ---
 
 ## Project Overview
 
-This project demonstrates the analysis of real phishing email samples to identify 
-malicious indicators of compromise. Two TryHackMe rooms were completed to gain 
-hands-on experience investigating actual phishing emails used by attackers.
+Built a SOC home lab to simulate real-world cyber attacks and detect them using 
+Splunk SIEM. The lab replicates the core workflow of a SOC analyst — monitoring 
+security logs, detecting suspicious activity, and investigating threats.
 
 ---
 
-## TryHackMe Rooms Completed
+## Lab Architecture
 
-| Room | Status |
-|------|--------|
-| Phishing Emails 1 | ✅ 100% |
-| Phishing Emails in Action | ✅ 100% |
+| Component | System | IP Address | Role |
+|-----------|--------|------------|------|
+| Attacker | Kali Linux 2025.2 | 192.168.52.x | Simulate attacks |
+| Target | Windows Server 2022 | 192.168.52.136 | Generate security logs |
+| SIEM | Splunk Enterprise 10.0.1 | 127.0.0.1:8000 | Log monitoring |
+| Virtualization | VMware Workstation Pro 17 | Host Machine | Run VMs |
 
 ---
 
 ## Screenshots
 
-### Room 1 – Phishing Emails 1 Completed
-![Room 1](screenshots/6_room1_completed.png)
-*TryHackMe Phishing Emails 1 completed with 100% progress – all 7 tasks finished.*
+### Network Connectivity Test
+![Ping Test](screenshots/4.%20ping_test.png)
+*Network connectivity verified between Kali Linux and Windows Server 2022 before attack simulation.*
 
 ---
 
-### Room 2 – Phishing Emails in Action Completed
-![Room 2](screenshots/10_room2_completed.png)
-*TryHackMe Phishing Emails in Action completed with 100% progress – all 8 tasks finished.*
+### Splunk SIEM Dashboard
+![Splunk Dashboard](screenshots/5.%20splunk_dashboard.png)
+*Splunk configured to collect Windows Security, System, and Application logs for real-time monitoring.*
 
 ---
 
-### Email Header Analysis
-![Email Header](screenshots/2_email_header.png)
-*Real phishing email header showing spoofed sender newsletters@ant.anki-tech.com masquerading as ADI Security Services.*
+### Attack 1 – Network Scan (Nmap)
+![Nmap Attack](screenshots/8.%20attack_nmap_scan.png)
+*Nmap scan from Kali Linux identifying open ports on Windows Server — simulates attacker reconnaissance (MITRE T1046).*
 
 ---
 
-### Phishing Email Body Analysis
-![Email Body](screenshots/3_email_body.png)
-*Email body analysis revealing malicious PDF attachment Payment-updateid.pdf with base64 encoded content.*
+### Attack 2 – Brute Force Login (Hydra)
+![Brute Force](screenshots/9.%20attack_brute_force.png)
+*Hydra brute force attack targeting SMB port 445 generating failed login events in Windows Security logs (MITRE T1110).*
 
 ---
 
-### Fake Login Page – Credential Harvesting
-![Login Page](screenshots/9_phishing_login_page.png)
-*Fake Microsoft Outlook login page used to steal credentials – shows Invalid Credentials regardless of input.*
+### Investigation – Attack Detected in Splunk
+![Investigation](screenshots/10.%20investigation_results.png)
+*Splunk query EventCode=4625 returned 15 failed logon events — confirming brute force attack was successfully detected.*
 
 ---
 
-## Key Findings
+## Windows Event IDs Used
 
-| # | Finding | Indicator | MITRE ATT&CK |
-|---|---------|-----------|--------------|
-| 1 | Email Spoofing | Sender/Reply-To mismatch | T1566.001 |
-| 2 | Malicious URL | hxxp[://]devret[.]xyz | T1566.002 |
-| 3 | Brand Impersonation | Home Depot, Microsoft, Adobe | T1566 |
-| 4 | Credential Harvesting | Fake Outlook login page | T1056.003 |
-| 5 | Tracking Pixel | Tracking.png embedded | T1598 |
-| 6 | Malicious Attachment | Payment-updateid.pdf | T1566.001 |
+| Event ID | Name | Description |
+|----------|------|-------------|
+| 4624 | Successful Logon | Normal login activity |
+| 4625 | Failed Logon | Brute force indicator |
+| 4688 | Process Creation | Suspicious process execution |
+| 4672 | Special Privileges | Privilege escalation indicator |
+
+---
+
+## Splunk Queries
+```
+index=main EventCode=4624
+index=main EventCode=4625
+index=main EventCode=4688
+```
 
 ---
 
 ## Tools Used
 
-| Tool | Purpose |
-|------|---------|
-| TryHackMe | Lab environment with real phishing samples |
-| Mozilla Thunderbird | Email client for analyzing .eml files |
-| CyberChef | URL defanging and base64 decoding |
-| MITRE ATT&CK | Threat framework mapping |
+| Tool | Version | Purpose |
+|------|---------|---------|
+| VMware Workstation Pro | 17 | Virtual machine environment |
+| Kali Linux | 2025.2 | Attacker machine |
+| Windows Server 2022 | Build 20348 | Target machine |
+| Splunk Enterprise | 10.0.1 | SIEM platform |
+| Nmap | 7.95 | Network scanning |
+| Hydra | 9.5 | Brute force simulation |
 
 ---
 
